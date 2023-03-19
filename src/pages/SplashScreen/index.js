@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import Logo from '/assets/logo.png';
 import Title from '/assets/title.png';
 import AutoDimensionImage, {imageDimensionTypes} from 'react-native-auto-dimensions-image';
+import { NAVIGATOR_SCREEN } from '../../utils/enum';
 
 const SplashScreen = ({ navigation }) => {
   const performTimeConsumingTask = async() => {
@@ -17,12 +18,12 @@ const SplashScreen = ({ navigation }) => {
   useAsyncEffect(async () => {
     const data = await performTimeConsumingTask();
     if (data !== null) {
-      navigation.navigate('Home');
+      navigation.navigate(NAVIGATOR_SCREEN.HOME);
     }
   }, [])
 
   return (
-    <View style={styles.viewStyles}>
+    <View style={styles.container}>
       <AutoDimensionImage
         source={{
           uri: Logo,
@@ -49,7 +50,7 @@ const SplashScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  viewStyles: {
+  container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

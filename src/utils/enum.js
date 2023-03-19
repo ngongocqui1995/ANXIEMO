@@ -1,0 +1,6 @@
+export const NAVIGATOR_SCREEN = {
+  HOME: 'HOME',
+  LOGIN: 'LOGIN',
+  REGISTER: 'REGISTER',
+  SPLASH: 'SPLASH',
+}
