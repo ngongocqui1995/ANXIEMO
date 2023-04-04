@@ -1,26 +1,28 @@
-import { useAsyncEffect } from 'ahooks';
-import { StyleSheet, View } from 'react-native';
-import Logo from '/assets/logo.png';
-import Title from '/assets/title.png';
-import AutoDimensionImage, {imageDimensionTypes} from 'react-native-auto-dimensions-image';
-import { NAVIGATOR_SCREEN } from '../../utils/enum';
+import { useAsyncEffect } from "ahooks";
+import { StyleSheet, View } from "react-native";
+import Logo from "/assets/logo.png";
+import Title from "/assets/title.png";
+import AutoDimensionImage, {
+  imageDimensionTypes,
+} from "react-native-auto-dimensions-image";
+import { NAVIGATOR_SCREEN } from "../../utils/enum";
+import { user } from "../../utils/data";
 
 const SplashScreen = ({ navigation }) => {
-  const performTimeConsumingTask = async() => {
+  const performTimeConsumingTask = async () => {
     return new Promise((resolve) =>
-      setTimeout(
-        () => { resolve('result') },
-        2000
-      )
-    )
-  }
+      setTimeout(() => {
+        resolve("result");
+      }, 2000)
+    );
+  };
 
   useAsyncEffect(async () => {
     const data = await performTimeConsumingTask();
     if (data !== null) {
       navigation.navigate(NAVIGATOR_SCREEN.HOME);
     }
-  }, [])
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -46,19 +48,19 @@ const SplashScreen = ({ navigation }) => {
         otherDimensionMaxValue={200}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 25
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 25,
   },
   image: {
-    alignSelf: 'center',
-    borderRadius: 20
+    alignSelf: "center",
+    borderRadius: 20,
   },
 });
 

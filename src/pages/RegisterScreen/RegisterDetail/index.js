@@ -1,10 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { NAVIGATOR_SCREEN } from "../../utils/enum";
-import IconPassword from "/assets/icon-password.png";
-import { useReactive } from "ahooks";
-import AwesomeAlert from "react-native-awesome-alerts";
-import { users } from "../../utils/data";
+import { TextInput } from "@react-native-material/core";
+import { NAVIGATOR_SCREEN } from "../../../utils/enum";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField, styled } from "@mui/material";
+import "dayjs/locale/vi";
+import { useReactive } from "ahooks";
+import { users } from "../../../utils/data";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -26,11 +30,12 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterDetail = ({ navigation, route }) => {
+  const { email } = route.params;
   const state = useReactive({
-    email: "",
-    password: "",
-    confirmPassword: "",
+    name: "",
+    birth_date: "",
+    gender: "",
     notify: {
       title: "",
       message: "",
@@ -40,111 +45,89 @@ const RegisterScreen = ({ navigation }) => {
   });
 
   const handleRegister = async () => {
-    if (!state.email) {
+    if (!state.name) {
       state.notify.title = "Lỗi";
-      state.notify.message = "Chưa nhập email!";
+      state.notify.message = "Chưa nhập tên!";
       state.notify.color = "red";
       state.notify.status = true;
       return;
     }
-    if (!state.password) {
+    if (!state.birth_date) {
       state.notify.title = "Lỗi";
-      state.notify.message = "Chưa nhập mật khẩu!";
+      state.notify.message = "Chưa nhập ngày sinh nhật!";
       state.notify.color = "red";
       state.notify.status = true;
       return;
     }
-    if (!state.confirmPassword) {
+    if (!state.gender) {
       state.notify.title = "Lỗi";
-      state.notify.message = "Chưa nhập xác nhận mật khẩu!";
-      state.notify.color = "red";
-      state.notify.status = true;
-      return;
-    }
-
-    if (state.password !== state.confirmPassword) {
-      state.notify.title = "Lỗi";
-      state.notify.message = "Mật khẩu và mật khẩu xác nhận không khớp!";
+      state.notify.message = "Chưa nhập giới tính!";
       state.notify.color = "red";
       state.notify.status = true;
       return;
     }
 
-    const findUser = users.find((user) => user.email === state.email);
-    if (findUser) {
-      state.notify.title = "Lỗi";
-      state.notify.message = "Người dùng đã tồn tại!";
-      state.notify.color = "red";
-      state.notify.status = true;
-      return;
-    }
-
-    users.push({
-      email: state.email,
-      password: state.password,
-      results: [],
-      notes: [],
+    users.forEach((user) => {
+      if (user.email === email) {
+        user.name = state.name;
+        user.birth_date = state.birth_date;
+        user.gender = state.gender;
+      }
     });
-    navigation.navigate(NAVIGATOR_SCREEN.REGISTER_DETAIL, {
-      email: state.email,
-    });
+    state.notify.title = "Thành công";
+    state.notify.message = "Đăng ký thành công!";
+    state.notify.color = "green";
+    state.notify.status = true;
+    navigation.navigate(NAVIGATOR_SCREEN.HOME);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Đăng ký</Text>
+      <Text style={styles.title}>Thông tin</Text>
       <View style={{ ...styles.detail, gap: 10 }}>
         <CssTextField
           variant="outlined"
-          label="Email / Số điện thoại"
+          label="Họ và tên"
           style={{
             ...styles.input,
             width: "70%",
           }}
-          onChange={(event) => (state.email = event.target.value)}
+          onChange={(event) => (state.name = event.target.value)}
         />
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
+          <DatePicker
+            label="Ngày sinh"
+            localeText={{
+              cancelButtonLabel: "Huỷ",
+              okButtonLabel: "Đồng ý",
+              toolbarTitle: "Chọn ngày",
+            }}
+            slots={{
+              textField: (params) => (
+                <CssTextField
+                  {...params}
+                  style={{
+                    ...styles.input,
+                    width: "70%",
+                  }}
+                />
+              ),
+            }}
+            onChange={(value) => (state.birth_date = value)}
+          />
+        </LocalizationProvider>
         <CssTextField
           variant="outlined"
-          label="Mật khẩu"
+          label="Giới tính"
           style={{
             ...styles.input,
             width: "70%",
           }}
-          type="password"
-          InputProps={{
-            endAdornment: (
-              <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
-            ),
-          }}
-          onChange={(event) => (state.password = event.target.value)}
-        />
-        <CssTextField
-          variant="outlined"
-          label="Nhập lại mật khẩu"
-          style={{
-            ...styles.input,
-            width: "70%",
-          }}
-          type="password"
-          InputProps={{
-            endAdornment: (
-              <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
-            ),
-          }}
-          onChange={(event) => (state.confirmPassword = event.target.value)}
+          onChange={(event) => (state.gender = event.target.value)}
         />
         <TouchableOpacity style={styles.btnLogin} onPress={handleRegister}>
           <Text style={styles.txtLogin}>Xác nhận</Text>
         </TouchableOpacity>
-        <Text>Đã có tài khoản?</Text>
-        <Text>
-          <Text>Đăng nhập </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NAVIGATOR_SCREEN.LOGIN)}
-          >
-            <Text style={styles.txtRegister}>tại đây</Text>
-          </TouchableOpacity>
-        </Text>
       </View>
       {state.notify.status && (
         <AwesomeAlert
@@ -209,10 +192,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  txtRegister: {
-    color: "#6B9080",
-    textDecorationLine: "underline",
-  },
 });
 
-export default RegisterScreen;
+export default RegisterDetail;
