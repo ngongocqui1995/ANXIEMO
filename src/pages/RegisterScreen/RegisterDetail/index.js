@@ -1,14 +1,40 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { TextInput } from "@react-native-material/core";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { NAVIGATOR_SCREEN } from "../../../utils/enum";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TextField, styled } from "@mui/material";
+import {
+  TextField,
+  Select,
+  styled,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import "dayjs/locale/vi";
 import { useReactive } from "ahooks";
 import { users } from "../../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
+
+const CssFormControl = styled(FormControl)({
+  "& .MuiFormLabel-root": {
+    color: "rgb(33, 33, 33)",
+    "&.Mui-focused": {
+      color: "#6B9080 !important",
+    },
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "gray",
+    },
+    "&:hover fieldset": {
+      borderColor: "black",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#6B9080",
+    },
+  },
+});
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -116,15 +142,18 @@ const RegisterDetail = ({ navigation, route }) => {
             onChange={(value) => (state.birth_date = value)}
           />
         </LocalizationProvider>
-        <CssTextField
-          variant="outlined"
-          label="Giới tính"
-          style={{
-            ...styles.input,
-            width: "70%",
-          }}
-          onChange={(event) => (state.gender = event.target.value)}
-        />
+        <CssFormControl style={{ ...styles.input, width: "70%" }}>
+          <InputLabel htmlFor="gender">Giới tính</InputLabel>
+          <Select
+            id="gender"
+            variant="outlined"
+            label="Giới tính"
+            onChange={(event) => (state.gender = event.target.value)}
+          >
+            <MenuItem value="0">Nam</MenuItem>
+            <MenuItem value="1">Nữ</MenuItem>
+          </Select>
+        </CssFormControl>
         <TouchableOpacity style={styles.btnLogin} onPress={handleRegister}>
           <Text style={styles.txtLogin}>Xác nhận</Text>
         </TouchableOpacity>

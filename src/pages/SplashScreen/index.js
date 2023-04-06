@@ -6,7 +6,6 @@ import AutoDimensionImage, {
   imageDimensionTypes,
 } from "react-native-auto-dimensions-image";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
-import { user } from "../../utils/data";
 
 const SplashScreen = ({ navigation }) => {
   const performTimeConsumingTask = async () => {
