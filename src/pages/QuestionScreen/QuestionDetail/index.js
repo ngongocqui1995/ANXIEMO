@@ -60,6 +60,7 @@ const QuestionDetail = ({ route, navigation }) => {
 
     navigation.navigate(NAVIGATOR_SCREEN.RESULT, {
       score,
+      key,
       title: `Lo lắng - ${label}`,
     });
   };

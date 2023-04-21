@@ -6,24 +6,15 @@ import AutoDimensionImage, {
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
 import { users } from "../../utils/data";
 import dayjs from "dayjs";
+import { getResult } from "../../utils/utils";
 
 const ResultScreen = ({ navigation, route }) => {
-  const { score, title } = route.params;
-
-  const getResult = () => {
-    if (score <= 13)
-      return "Bạn thật xuất sắc khi không có sợ hãi hay lo lắng.";
-    if (score <= 30)
-      return "Bạn cần khắc phục để tốt hơn trong nỗi sợ của mình.";
-    if (score <= 50) return "Bạn trong tâm trạng mệt mỏi.";
-    if (score <= 80) return "Bạn đang chán nản trong việc học.";
-    if (score >= 81) return "Bạn có nguy cơ ở lại lớp.";
-  };
+  const { score, key, title } = route.params;
 
   const handleYes = () => {
     users.forEach((user) => {
       if (user.email === user.email) {
-        user.results.push({ score, title, date: dayjs() });
+        user.results.push({ score, key, title, date: dayjs() });
       }
     });
     navigation.navigate(NAVIGATOR_SCREEN.ADMIN);
@@ -57,7 +48,7 @@ const ResultScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.detail}>
           <Text style={styles.txtScore}>{score}</Text>
-          <Text style={styles.txtResult}>{getResult()}</Text>
+          <Text style={styles.txtResult}>{getResult(key, score)}</Text>
         </View>
         <View style={styles.detail}>
           <View

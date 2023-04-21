@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { QUESTION_SCREEN } from "./enum";
 
 export const user = {
   email: "",
@@ -11,7 +12,14 @@ export const users = [
     name: "admin",
     birth_date: "12/12/1998",
     gender: "Nam",
-    results: [{ title: "Lo lắng - Việc học", score: 13, date: dayjs() }],
+    results: [
+      {
+        title: "Lo lắng - Việc học",
+        key: QUESTION_SCREEN.VIEC_HOC,
+        score: 13,
+        date: dayjs(),
+      },
+    ],
     notes: [
       { title: "Tiêu đề", description: "a", date: dayjs() },
       { title: "Tiêu đề", description: "b", date: dayjs() },
