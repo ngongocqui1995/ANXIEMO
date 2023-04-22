@@ -5,6 +5,9 @@ import { useReactive } from "ahooks";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { users } from "../../utils/data";
 import { TextField, styled } from "@mui/material";
+import { checkEmail } from "../../services/auth";
+import to from "await-to-js";
+import dayjs from "dayjs";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -47,6 +50,13 @@ const RegisterScreen = ({ navigation }) => {
       state.notify.status = true;
       return;
     }
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(state.email)) {
+      state.notify.title = "Lỗi";
+      state.notify.message = "Email không hợp lệ!";
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
     if (!state.password) {
       state.notify.title = "Lỗi";
       state.notify.message = "Chưa nhập mật khẩu!";
@@ -79,14 +89,30 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
 
-    users.push({
-      email: state.email,
-      password: state.password,
-      results: [],
-      notes: [],
-    });
+    const [, res] = await to(checkEmail({
+      "email": state.email,
+      "dateOfBirth": dayjs(),
+      "username": "a",
+      "password": "a",
+      "gender": "Male"
+    }))
+    if (!Boolean(res.data)) {
+      state.notify.title = "Lỗi";
+      state.notify.message = "Email đã tồn tại!";
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
+
+    // users.push({
+    //   email: state.email,
+    //   password: state.password,
+    //   results: [],
+    //   notes: [],
+    // });
     navigation.navigate(NAVIGATOR_SCREEN.REGISTER_DETAIL, {
       email: state.email,
+      password: state.password,
     });
   };
 
@@ -96,7 +122,7 @@ const RegisterScreen = ({ navigation }) => {
       <View style={{ ...styles.detail, gap: 10 }}>
         <CssTextField
           variant="outlined"
-          label="Email / Số điện thoại"
+          label="Email"
           style={{
             ...styles.input,
             width: "70%",

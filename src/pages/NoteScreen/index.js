@@ -10,9 +10,10 @@ import AutoDimensionImage, {
   imageDimensionTypes,
 } from "react-native-auto-dimensions-image";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
-import { useReactive } from "ahooks";
-import { useEffect } from "react";
+import { useAsyncEffect, useReactive } from "ahooks";
 import { user, users } from "../../utils/data";
+import { getNote } from "../../services/note";
+import dayjs from "dayjs";
 
 const NoteScreen = ({ navigation, route }) => {
   const { key } = route.params;
@@ -21,9 +22,17 @@ const NoteScreen = ({ navigation, route }) => {
     data: [],
   });
 
-  useEffect(() => {
-    const findUser = users.find((item) => item.email === user.email);
-    state.data = findUser?.notes || [];
+  useAsyncEffect(async () => {
+    // const findUser = users.find((item) => item.email === user.email);
+    // state.data = findUser?.notes || [];
+    const note = await getNote(user._id);
+    state.data = note?.data?.map?.((item) => {
+      return {
+        title: item.title,
+        description: item.description,
+        date: dayjs(item.createdAt)
+      }
+    }) || [];
   }, [key]);
 
   const handleClick = (item) => {

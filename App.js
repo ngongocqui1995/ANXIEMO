@@ -15,6 +15,8 @@ import NoteScreen from "./src/pages/NoteScreen";
 import RepoDetail from "./src/pages/RepoScreen/RepoDetail";
 import NoteDetail from "./src/pages/NoteScreen/NoteDetail";
 import NoteForm from "./src/pages/NoteScreen/NoteForm";
+import AboutScreen from "./src/pages/AboutScreen";
+import UpdateProfile from "./src/pages/ProfileScreen/UpdateProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -90,6 +92,16 @@ const App = () => {
         <Stack.Screen
           name={NAVIGATOR_SCREEN.NOTE_FORM}
           component={NoteForm}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={NAVIGATOR_SCREEN.ABOUT}
+          component={AboutScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={NAVIGATOR_SCREEN.UPDATE_PROFILE}
+          component={UpdateProfile}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

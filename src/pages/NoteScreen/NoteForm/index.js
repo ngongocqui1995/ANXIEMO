@@ -9,6 +9,8 @@ import dayjs from "dayjs";
 import { TextField, styled } from "@mui/material";
 import { user, users } from "../../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { createNote } from "../../../services/note";
+import to from "await-to-js";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -42,7 +44,7 @@ const NoteForm = ({ navigation }) => {
     },
   });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!state.title) {
       state.notify.title = "Lỗi";
       state.notify.message = "Chưa nhập tiêu đề!";
@@ -58,15 +60,29 @@ const NoteForm = ({ navigation }) => {
       return;
     }
 
-    users.forEach((item) => {
-      if (item.email === user.email) {
-        item.notes.push({
-          title: state.title,
-          description: state.description,
-          date: dayjs(),
-        });
-      }
-    });
+    const [err] = await to(createNote({
+      userId: user._id,
+      title: state.title,
+      description: state.description
+    }))
+
+    if (err) {
+      state.notify.title = "Lỗi";
+      state.notify.message = err.message;
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
+
+    // users.forEach((item) => {
+    //   if (item.email === user.email) {
+    //     item.notes.push({
+    //       title: state.title,
+    //       description: state.description,
+    //       date: dayjs(),
+    //     });
+    //   }
+    // });
     navigation.navigate(NAVIGATOR_SCREEN.NOTE, { key: 2 });
   };
 

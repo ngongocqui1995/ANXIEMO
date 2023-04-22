@@ -15,6 +15,8 @@ import "dayjs/locale/vi";
 import { useReactive } from "ahooks";
 import { users } from "../../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { registerUser } from "../../../services/auth";
+import to from "await-to-js";
 
 const CssFormControl = styled(FormControl)({
   "& .MuiFormLabel-root": {
@@ -57,7 +59,7 @@ const CssTextField = styled(TextField)({
 });
 
 const RegisterDetail = ({ navigation, route }) => {
-  const { email } = route.params;
+  const { email, password } = route.params;
   const state = useReactive({
     name: "",
     birth_date: "",
@@ -93,13 +95,28 @@ const RegisterDetail = ({ navigation, route }) => {
       return;
     }
 
-    users.forEach((user) => {
-      if (user.email === email) {
-        user.name = state.name;
-        user.birth_date = state.birth_date;
-        user.gender = state.gender;
-      }
-    });
+    const [err] = await to(registerUser({
+      "email": email,
+      "dateOfBirth": state.birth_date,
+      "username": state.name,
+      "password": password,
+      "gender": state.gender
+    }))
+    if (err) {
+      state.notify.title = "Lỗi";
+      state.notify.message = err.message;
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
+
+    // users.forEach((user) => {
+    //   if (user.email === email) {
+    //     user.name = state.name;
+    //     user.birth_date = state.birth_date;
+    //     user.gender = state.gender;
+    //   }
+    // });
     state.notify.title = "Thành công";
     state.notify.message = "Đăng ký thành công!";
     state.notify.color = "green";
@@ -150,8 +167,9 @@ const RegisterDetail = ({ navigation, route }) => {
             label="Giới tính"
             onChange={(event) => (state.gender = event.target.value)}
           >
-            <MenuItem value="0">Nam</MenuItem>
-            <MenuItem value="1">Nữ</MenuItem>
+            <MenuItem value="Male">Nam</MenuItem>
+            <MenuItem value="Female">Nữ</MenuItem>
+            <MenuItem value="Other">Khác</MenuItem>
           </Select>
         </CssFormControl>
         <TouchableOpacity style={styles.btnLogin} onPress={handleRegister}>

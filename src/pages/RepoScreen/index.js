@@ -3,18 +3,28 @@ import IconHome from "/assets/home.png";
 import AutoDimensionImage, {
   imageDimensionTypes,
 } from "react-native-auto-dimensions-image";
-import { NAVIGATOR_SCREEN, QUESTION_SCREEN } from "../../utils/enum";
+import { NAVIGATOR_SCREEN, QUESTION_TYPE } from "../../utils/enum";
 import { FlatList } from "react-native";
-import { user, users } from "../../utils/data";
-import { useReactive } from "ahooks";
-import { useEffect } from "react";
+import { useAsyncEffect, useReactive } from "ahooks";
+import { getQuestion } from "../../services/question";
+import { user } from "../../utils/data";
+import dayjs from "dayjs";
 
 const RepoScreen = ({ navigation }) => {
   const state = useReactive({ data: [] });
 
-  useEffect(() => {
-    const findUser = users.find((item) => item.email === user.email);
-    state.data = findUser?.results || [];
+  useAsyncEffect(async () => {
+    // const findUser = users.find((item) => item.email === user.email);
+    // state.data = findUser?.results || [];
+    const question = await getQuestion(user._id);
+    state.data = question?.data?.map?.((item) => {
+      return {
+        title: QUESTION_TYPE[item.type].title,
+        key: QUESTION_TYPE[item.type].key,
+        score: item.answer.reduce((a, b) => a + b, 0),
+        date: dayjs(item.createdAt)
+      }
+    }) || [];
   }, []);
 
   const handleClick = (item) => {
@@ -46,6 +56,7 @@ const RepoScreen = ({ navigation }) => {
         <View style={styles.detail}>
           <FlatList
             data={state.data}
+            keyExtractor={(_, index) => index}
             style={{ width: "100%" }}
             renderItem={({ item, index }) => (
               <TouchableOpacity

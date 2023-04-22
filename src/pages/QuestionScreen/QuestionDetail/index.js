@@ -41,7 +41,7 @@ const QuestionDetail = ({ route, navigation }) => {
     state.data[index].questions[indexQuestion].selected = true;
   };
 
-  const handleResult = () => {
+  const handleResult = async () => {
     for (let i = 0; i < state.data.length; i++) {
       const check = state.data[i].questions.some((it) => it.selected);
       if (!check) {
@@ -53,6 +53,11 @@ const QuestionDetail = ({ route, navigation }) => {
       }
     }
 
+    const answers = state.data.map((item) => {
+      const findQuestion = item.questions.find((item) => item.selected);
+      return findQuestion.key;
+    });
+
     const score = state.data.reduce((prev, cur) => {
       const findQuestion = cur.questions.find((item) => item.selected);
       return prev + +findQuestion.key;
@@ -61,6 +66,7 @@ const QuestionDetail = ({ route, navigation }) => {
     navigation.navigate(NAVIGATOR_SCREEN.RESULT, {
       score,
       key,
+      answers,
       title: `Lo lắng - ${label}`,
     });
   };

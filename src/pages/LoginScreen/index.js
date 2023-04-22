@@ -6,6 +6,8 @@ import { TextField, styled } from "@mui/material";
 import { useReactive } from "ahooks";
 import { user, users } from "../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { loginUser } from "../../services/auth";
+import to from "await-to-js";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -39,10 +41,17 @@ const LoginScreen = ({ navigation }) => {
     },
   });
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!state.email) {
       state.notify.title = "Lỗi";
       state.notify.message = "Chưa nhập email!";
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(state.email)) {
+      state.notify.title = "Lỗi";
+      state.notify.message = "Email không hợp lệ!";
       state.notify.color = "red";
       state.notify.status = true;
       return;
@@ -55,25 +64,42 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    const findUser = users.find((user) => user.email === state.email);
-    if (!findUser) {
+    // const findUser = users.find((user) => user.email === state.email);
+    // if (!findUser) {
+    //   state.notify.title = "Lỗi";
+    //   state.notify.message = "Email không tồn tại!";
+    //   state.notify.color = "red";
+    //   state.notify.status = true;
+    //   return;
+    // }
+
+    // const findPassword = users.find((user) => user.password === state.password);
+    // if (!findPassword) {
+    //   state.notify.title = "Lỗi";
+    //   state.notify.message = "Nhập sai mật khẩu!";
+    //   state.notify.color = "red";
+    //   state.notify.status = true;
+    //   return;
+    // }
+
+    const [err, result] = await to(loginUser({
+      email: state.email,
+      password: state.password
+    }))
+
+    if (err) {
       state.notify.title = "Lỗi";
-      state.notify.message = "Email không tồn tại!";
+      state.notify.message = 'Nhập sai email hoặc mật khẩu!';
       state.notify.color = "red";
       state.notify.status = true;
       return;
     }
 
-    const findPassword = users.find((user) => user.password === state.password);
-    if (!findPassword) {
-      state.notify.title = "Lỗi";
-      state.notify.message = "Nhập sai mật khẩu!";
-      state.notify.color = "red";
-      state.notify.status = true;
-      return;
-    }
-
-    user.email = state.email;
+    user.email = result.data?.email;
+    user._id = result.data?._id;
+    user.gender = result.data?.gender;
+    user.name = result.data?.username;
+    user.dateOfBirth = result.data?.dateOfBirth;
     navigation.navigate(NAVIGATOR_SCREEN.ADMIN);
   };
 
@@ -83,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={{ ...styles.detail, gap: 10 }}>
         <CssTextField
           variant="outlined"
-          label="Email / Số điện thoại"
+          label="Email"
           style={{
             ...styles.input,
             width: "70%",

@@ -34,7 +34,7 @@ const NoteDetail = ({ navigation, route }) => {
           <Text
             style={{
               color: "#6B9080",
-              fontSize: 18,
+              fontSize: 24,
               fontWeight: "bold",
             }}
           >

@@ -3,20 +3,46 @@ import IconHome from "/assets/home.png";
 import AutoDimensionImage, {
   imageDimensionTypes,
 } from "react-native-auto-dimensions-image";
-import { NAVIGATOR_SCREEN } from "../../utils/enum";
-import { users } from "../../utils/data";
+import { NAVIGATOR_SCREEN, QUESTION_TYPE_SCREEN } from "../../utils/enum";
+import { user, users } from "../../utils/data";
 import dayjs from "dayjs";
 import { getResult } from "../../utils/utils";
+import to from "await-to-js";
+import { createQuestion } from "../../services/question";
+import { useReactive } from "ahooks";
 
 const ResultScreen = ({ navigation, route }) => {
-  const { score, key, title } = route.params;
+  const { score, key, title, answers } = route.params;
+  const state = useReactive({
+    notify: {
+      title: "",
+      message: "",
+      color: "",
+      status: false,
+    },
+  });
 
-  const handleYes = () => {
+  const handleYes = async () => {
     users.forEach((user) => {
       if (user.email === user.email) {
         user.results.push({ score, key, title, date: dayjs() });
       }
     });
+
+    const [err] = await to(createQuestion({
+      userId: user._id,
+      answer: answers,
+      type: QUESTION_TYPE_SCREEN[key].type,
+    }))
+
+    if (err) {
+      state.notify.title = "Lỗi";
+      state.notify.message = err.message;
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
+    }
+
     navigation.navigate(NAVIGATOR_SCREEN.ADMIN);
   };
 
@@ -71,6 +97,25 @@ const ResultScreen = ({ navigation, route }) => {
           </View>
         </View>
       </View>
+      {state.notify.status && (
+        <AwesomeAlert
+          show={state.notify.status}
+          showProgress={false}
+          title={state.notify.title}
+          message={state.notify.message}
+          onDismiss={() => {
+            state.notify.title = "";
+            state.notify.color = "";
+            state.notify.message = "";
+            state.notify.status = false;
+          }}
+          titleStyle={{
+            fontSize: 24,
+            color: state.notify.color,
+            fontWeight: "bold",
+          }}
+        />
+      )}
     </View>
   );
 };

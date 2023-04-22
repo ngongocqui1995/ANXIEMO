@@ -1,8 +1,16 @@
 import dayjs from "dayjs";
 import { QUESTION_SCREEN } from "./enum";
 
+export const settings = {
+  popupQuestion: true,
+}
+
 export const user = {
   email: "",
+  dateOfBirth: "",
+  gender: "",
+  _id: "",
+  name: ""
 };
 
 export const users = [
@@ -132,17 +140,6 @@ export const room = [
   },
   {
     title: "Tôi cảm thấy căng thẳng khi ở trong lớp.",
-    questions: [
-      { key: 1, label: "Rất không đồng ý" },
-      { key: 2, label: "Không đồng ý" },
-      { key: 3, label: "Phân vân" },
-      { key: 4, label: "Đồng ý" },
-      { key: 5, label: "Rất đồng ý" },
-    ],
-  },
-  {
-    title:
-      "Khi tôi không hiểu điều gì đó quan trọng trong lớp thì tim tôi đập nhanh.",
     questions: [
       { key: 1, label: "Rất không đồng ý" },
       { key: 2, label: "Không đồng ý" },
