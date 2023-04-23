@@ -4,10 +4,12 @@ import IconPassword from "/assets/icon-password.png";
 import { useReactive } from "ahooks";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { users } from "../../utils/data";
-import { TextField, styled } from "@mui/material";
+import { IconButton, InputAdornment, TextField, styled } from "@mui/material";
 import { checkEmail } from "../../services/auth";
 import to from "await-to-js";
 import dayjs from "dayjs";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -30,6 +32,8 @@ const CssTextField = styled(TextField)({
 });
 
 const RegisterScreen = ({ navigation }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const state = useReactive({
     email: "",
     password: "",
@@ -41,6 +45,18 @@ const RegisterScreen = ({ navigation }) => {
       status: false,
     },
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+
+  const handleMouseDownConfirmPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleRegister = async () => {
     if (!state.email) {
@@ -136,10 +152,27 @@ const RegisterScreen = ({ navigation }) => {
             ...styles.input,
             width: "70%",
           }}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="start"
+                  style={{ padding: 16 }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                <IconButton
+                  aria-label="toggle password visibility"
+                  edge="end"
+                  style={{ padding: 16 }}
+                >
+                  <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+                </IconButton>
+              </InputAdornment>
             ),
           }}
           onChange={(event) => (state.password = event.target.value)}
@@ -151,10 +184,27 @@ const RegisterScreen = ({ navigation }) => {
             ...styles.input,
             width: "70%",
           }}
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowConfirmPassword}
+                  onMouseDown={handleMouseDownConfirmPassword}
+                  edge="start"
+                  style={{ padding: 16 }}
+                >
+                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                <IconButton
+                  aria-label="toggle password visibility"
+                  edge="end"
+                  style={{ padding: 16 }}
+                >
+                  <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+                </IconButton>
+              </InputAdornment>
             ),
           }}
           onChange={(event) => (state.confirmPassword = event.target.value)}

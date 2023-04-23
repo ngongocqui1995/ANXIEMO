@@ -2,12 +2,14 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { TextInput } from "@react-native-material/core";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
 import IconPassword from "/assets/icon-password.png";
-import { TextField, styled } from "@mui/material";
+import { IconButton, InputAdornment, TextField, styled } from "@mui/material";
 import { useReactive } from "ahooks";
 import { user, users } from "../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { loginUser } from "../../services/auth";
 import to from "await-to-js";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -30,6 +32,7 @@ const CssTextField = styled(TextField)({
 });
 
 const LoginScreen = ({ navigation }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const state = useReactive({
     email: "",
     password: "",
@@ -40,6 +43,12 @@ const LoginScreen = ({ navigation }) => {
       status: false,
     },
   });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleLogin = async () => {
     if (!state.email) {
@@ -123,10 +132,27 @@ const LoginScreen = ({ navigation }) => {
             ...styles.input,
             width: "70%",
           }}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="start"
+                  style={{ padding: 16 }}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                <IconButton
+                  aria-label="toggle password visibility"
+                  edge="end"
+                  style={{ padding: 16 }}
+                >
+                  <Image source={{ uri: IconPassword, width: 20, height: 25 }} />
+                </IconButton>
+              </InputAdornment>
             ),
           }}
           onChange={(event) => (state.password = event.target.value)}
