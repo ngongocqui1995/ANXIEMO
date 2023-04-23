@@ -42,15 +42,18 @@ const QuestionDetail = ({ route, navigation }) => {
   };
 
   const handleResult = async () => {
+    const notSelected = [];
     for (let i = 0; i < state.data.length; i++) {
       const check = state.data[i].questions.some((it) => it.selected);
-      if (!check) {
-        state.notify.title = "Lỗi";
-        state.notify.message = `Bạn chưa chọn câu ${i + 1}!`;
-        state.notify.color = "red";
-        state.notify.status = true;
-        return;
-      }
+      if (!check) notSelected.push(i + 1);
+    }
+
+    if (notSelected.length > 0) {
+      state.notify.title = "Lỗi";
+      state.notify.message = `Bạn chưa chọn câu ${notSelected.join(", ")}!`;
+      state.notify.color = "red";
+      state.notify.status = true;
+      return;
     }
 
     const answers = state.data.map((item) => {

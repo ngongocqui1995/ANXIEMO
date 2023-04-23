@@ -1,15 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { TextInput } from "@react-native-material/core";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
-import IconPassword from "/assets/icon-password.png";
-import { IconButton, InputAdornment, TextField, styled } from "@mui/material";
+import { TextField, styled } from "@mui/material";
 import { useReactive } from "ahooks";
-import { user, users } from "../../utils/data";
+import { user } from "../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { loginUser } from "../../services/auth";
 import to from "await-to-js";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useState } from "react";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -31,11 +27,9 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const LoginScreen = ({ navigation }) => {
-  const [showPassword, setShowPassword] = useState(false);
+const ForgotPassword = ({ navigation }) => {
   const state = useReactive({
     email: "",
-    password: "",
     notify: {
       title: "",
       message: "",
@@ -43,12 +37,6 @@ const LoginScreen = ({ navigation }) => {
       status: false,
     },
   });
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
 
   const handleLogin = async () => {
     if (!state.email) {
@@ -65,31 +53,6 @@ const LoginScreen = ({ navigation }) => {
       state.notify.status = true;
       return;
     }
-    if (!state.password) {
-      state.notify.title = "Lỗi";
-      state.notify.message = "Chưa nhập mật khẩu!";
-      state.notify.color = "red";
-      state.notify.status = true;
-      return;
-    }
-
-    // const findUser = users.find((user) => user.email === state.email);
-    // if (!findUser) {
-    //   state.notify.title = "Lỗi";
-    //   state.notify.message = "Email không tồn tại!";
-    //   state.notify.color = "red";
-    //   state.notify.status = true;
-    //   return;
-    // }
-
-    // const findPassword = users.find((user) => user.password === state.password);
-    // if (!findPassword) {
-    //   state.notify.title = "Lỗi";
-    //   state.notify.message = "Nhập sai mật khẩu!";
-    //   state.notify.color = "red";
-    //   state.notify.status = true;
-    //   return;
-    // }
 
     const [err, result] = await to(
       loginUser({
@@ -116,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Đăng nhập</Text>
+      <Text style={styles.title}>Quên mật khẩu</Text>
       <View style={{ ...styles.detail, gap: 10 }}>
         <CssTextField
           variant="outlined"
@@ -127,58 +90,8 @@ const LoginScreen = ({ navigation }) => {
           }}
           onChange={(event) => (state.email = event.target.value)}
         />
-        <CssTextField
-          variant="outlined"
-          label="Mật khẩu"
-          style={{
-            ...styles.input,
-            width: "70%",
-          }}
-          type={showPassword ? "text" : "password"}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="start"
-                  style={{ padding: 16 }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-                <IconButton
-                  aria-label="toggle password visibility"
-                  edge="end"
-                  style={{ padding: 16 }}
-                >
-                  <Image
-                    source={{ uri: IconPassword, width: 20, height: 25 }}
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          onChange={(event) => (state.password = event.target.value)}
-        />
         <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
-          <Text style={styles.txtLogin}>Xác nhận</Text>
-        </TouchableOpacity>
-        <Text>
-          <Text>Chưa có tài khoản? </Text>
-          <Text>
-            <Text>Đăng ký </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(NAVIGATOR_SCREEN.REGISTER)}
-            >
-              <Text style={styles.txtRegister}>tại đây</Text>
-            </TouchableOpacity>
-          </Text>
-        </Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(NAVIGATOR_SCREEN.FORGOT_PASSWORD)}
-        >
-          <Text style={styles.txtRegister}>Quên mật khẩu?</Text>
+          <Text style={styles.txtLogin}>Gửi</Text>
         </TouchableOpacity>
       </View>
       {state.notify.status && (
@@ -243,10 +156,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  txtRegister: {
-    color: "#6B9080",
-    textDecorationLine: "underline",
-  },
 });
 
-export default LoginScreen;
+export default ForgotPassword;

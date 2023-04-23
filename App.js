@@ -17,6 +17,7 @@ import NoteDetail from "./src/pages/NoteScreen/NoteDetail";
 import NoteForm from "./src/pages/NoteScreen/NoteForm";
 import AboutScreen from "./src/pages/AboutScreen";
 import UpdateProfile from "./src/pages/ProfileScreen/UpdateProfile";
+import ForgotPassword from "./src/pages/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -102,6 +103,11 @@ const App = () => {
         <Stack.Screen
           name={NAVIGATOR_SCREEN.UPDATE_PROFILE}
           component={UpdateProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={NAVIGATOR_SCREEN.FORGOT_PASSWORD}
+          component={ForgotPassword}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

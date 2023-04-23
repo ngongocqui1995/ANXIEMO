@@ -15,7 +15,8 @@ export const NAVIGATOR_SCREEN = {
   NOTE_FORM: "NOTE_FORM",
   ABOUT: "ABOUT",
   PROFILE: "PROFILE",
-  UPDATE_PROFILE: "UPDATE_PROFILE"
+  UPDATE_PROFILE: "UPDATE_PROFILE",
+  FORGOT_PASSWORD: "FORGOT_PASSWORD",
 };
 
 export const QUESTION_SCREEN = {
@@ -25,13 +26,37 @@ export const QUESTION_SCREEN = {
 };
 
 export const QUESTION_TYPE_SCREEN = {
-  [QUESTION_SCREEN.LOP_HOC]: { type: "Class", title: "Lo lắng - Lớp học", key: QUESTION_SCREEN.LOP_HOC, },
-  [QUESTION_SCREEN.VIEC_HOC]: { type: "Study", title: "Lo lắng - Việc học", key: QUESTION_SCREEN.VIEC_HOC },
-  [QUESTION_SCREEN.THI_CU]: { type: "Exam", title: "Lo lắng - Thi cử", key: QUESTION_SCREEN.THI_CU }
-}
+  [QUESTION_SCREEN.LOP_HOC]: {
+    type: "Class",
+    title: "Lo lắng - Lớp học",
+    key: QUESTION_SCREEN.LOP_HOC,
+  },
+  [QUESTION_SCREEN.VIEC_HOC]: {
+    type: "Study",
+    title: "Lo lắng - Việc học",
+    key: QUESTION_SCREEN.VIEC_HOC,
+  },
+  [QUESTION_SCREEN.THI_CU]: {
+    type: "Exam",
+    title: "Lo lắng - Thi cử",
+    key: QUESTION_SCREEN.THI_CU,
+  },
+};
 
 export const QUESTION_TYPE = {
-  Class: { type: "Class", title: "Lo lắng - Lớp học", key: QUESTION_SCREEN.LOP_HOC, },
-  Study: { type: "Study", title: "Lo lắng - Việc học", key: QUESTION_SCREEN.VIEC_HOC },
-  Exam: { type: "Exam", title: "Lo lắng - Thi cử", key: QUESTION_SCREEN.THI_CU }
-}
+  Class: {
+    type: "Class",
+    title: "Lo lắng - Lớp học",
+    key: QUESTION_SCREEN.LOP_HOC,
+  },
+  Study: {
+    type: "Study",
+    title: "Lo lắng - Việc học",
+    key: QUESTION_SCREEN.VIEC_HOC,
+  },
+  Exam: {
+    type: "Exam",
+    title: "Lo lắng - Thi cử",
+    key: QUESTION_SCREEN.THI_CU,
+  },
+};
