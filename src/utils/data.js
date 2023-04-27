@@ -3,14 +3,14 @@ import { QUESTION_SCREEN } from "./enum";
 
 export const settings = {
   popupQuestion: true,
-}
+};
 
 export const user = {
   email: "",
   dateOfBirth: "",
   gender: "",
   _id: "",
-  name: ""
+  name: "",
 };
 
 export const users = [
@@ -279,7 +279,7 @@ export const learn = [
 
 export const examination = [
   {
-    title: "Khi tôi phải học, tôi bắt đầu cảm thấy buồn nôn.",
+    title: "Khi tôi phải thi, tôi bắt đầu cảm thấy buồn nôn.",
     questions: [
       { key: 1, label: "Rất không đồng ý" },
       { key: 2, label: "Không đồng ý" },
@@ -289,7 +289,7 @@ export const examination = [
     ],
   },
   {
-    title: "Khi sắp hết thời gian học, tim tôi bắt đầu đập nhanh.",
+    title: "Khi sắp hết thời gian thi, tim tôi bắt đầu đập nhanh.",
     questions: [
       { key: 1, label: "Rất không đồng ý" },
       { key: 2, label: "Không đồng ý" },

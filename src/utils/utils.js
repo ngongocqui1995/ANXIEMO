@@ -4,7 +4,7 @@ export const getResult = (key, score) => {
   switch (key) {
     case QUESTION_SCREEN.LOP_HOC: {
       if (score === 31)
-        return "Biểu hiện lo âu trong học tập của bạn ở mức trung bình";
+        return "Biểu hiện lo âu trong lớp học của bạn ở mức trung bình";
       if (score <= 21.75)
         return "Bạn ít có khả năng có biểu hiện lo âu liên quan đến lớp học";
       if (score <= 25.06)
@@ -22,7 +22,7 @@ export const getResult = (key, score) => {
     }
     case QUESTION_SCREEN.VIEC_HOC: {
       if (score === 33)
-        return "Biểu hiện lo âu trong học tập của bạn ở mức trung bình";
+        return "Biểu hiện lo âu trong việc học của bạn ở mức trung bình";
       if (score <= 24.11)
         return "Bạn ít có khả năng có biểu hiện lo âu liên quan đến việc học";
       if (score <= 27.14)
@@ -40,7 +40,7 @@ export const getResult = (key, score) => {
     }
     case QUESTION_SCREEN.THI_CU: {
       if (score === 38)
-        return "Biểu hiện lo âu trong học tập của bạn ở mức trung bình";
+        return "Biểu hiện lo âu trong thi cử của bạn ở mức trung bình";
       if (score <= 27.14)
         return "Bạn ít có khả năng có biểu hiện lo âu liên quan đến thi cử";
       if (score <= 30.81)

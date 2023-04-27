@@ -10,6 +10,7 @@ import { getResult } from "../../utils/utils";
 import to from "await-to-js";
 import { createQuestion } from "../../services/question";
 import { useReactive } from "ahooks";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const ResultScreen = ({ navigation, route }) => {
   const { score, key, title, answers } = route.params;
@@ -29,11 +30,13 @@ const ResultScreen = ({ navigation, route }) => {
       }
     });
 
-    const [err] = await to(createQuestion({
-      userId: user._id,
-      answer: answers,
-      type: QUESTION_TYPE_SCREEN[key].type,
-    }))
+    const [err] = await to(
+      createQuestion({
+        userId: user._id,
+        answer: answers,
+        type: QUESTION_TYPE_SCREEN[key].type,
+      })
+    );
 
     if (err) {
       state.notify.title = "Lỗi";
