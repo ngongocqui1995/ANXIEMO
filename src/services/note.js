@@ -7,3 +7,7 @@ export const createNote = (body) => {
 export const getNote = (id) => {
   return API.get(`notes/user/${id}`);
 };
+
+export const deleteNote = (id) => {
+  return API.delete(`notes/${id}`);
+};

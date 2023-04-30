@@ -14,4 +14,16 @@ export const loginUser = (body) => {
 
 export const updateUser = (id, body) => {
   return API.patch(`user/${id}`, body);
-}
+};
+
+export const sendCodeEmail = (body) => {
+  return API.patch(`user/send-code`, null, {
+    params: body,
+  });
+};
+
+export const checkSendCodeEmail = (body) => {
+  return API.get(`user/check-send-code`, {
+    params: body,
+  });
+};

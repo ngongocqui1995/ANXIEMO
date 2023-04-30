@@ -1,10 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import IconHome from "/assets/home.png";
-import AutoDimensionImage, {
-  imageDimensionTypes,
-} from "react-native-auto-dimensions-image";
 import { NAVIGATOR_SCREEN } from "../../../utils/enum";
 import { getResult } from "../../../utils/utils";
+import { ArrowBack } from "@mui/icons-material";
 
 const RepoDetail = ({ navigation, route }) => {
   const { score, key, title, date } = route.params;
@@ -15,19 +12,9 @@ const RepoDetail = ({ navigation, route }) => {
         <View style={styles.header}>
           <TouchableOpacity
             style={{ position: "absolute", left: 0 }}
-            onPress={() => navigation.navigate(NAVIGATOR_SCREEN.ADMIN)}
+            onPress={() => navigation.navigate(NAVIGATOR_SCREEN.REPO)}
           >
-            <AutoDimensionImage
-              source={{
-                uri: IconHome,
-                height: 105,
-                width: 105,
-              }}
-              dimensionType={imageDimensionTypes.HEIGHT}
-              dimensionValue={45}
-              otherDimensionMaxValue={45}
-              style={styles.image}
-            />
+            <ArrowBack style={styles.image} />
           </TouchableOpacity>
           <Text style={styles.title}>Lưu trữ</Text>
         </View>

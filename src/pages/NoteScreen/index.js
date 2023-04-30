@@ -12,31 +12,59 @@ import AutoDimensionImage, {
 import { NAVIGATOR_SCREEN } from "../../utils/enum";
 import { useAsyncEffect, useReactive } from "ahooks";
 import { user, users } from "../../utils/data";
-import { getNote } from "../../services/note";
+import { deleteNote, getNote } from "../../services/note";
 import dayjs from "dayjs";
+import AwesomeAlert from "react-native-awesome-alerts";
+import { Close } from "@mui/icons-material";
 
 const NoteScreen = ({ navigation, route }) => {
   const { key } = route.params;
 
   const state = useReactive({
     data: [],
+    notify: {
+      title: "",
+      message: "",
+      color: "",
+      status: false,
+    },
+    deleted: "",
   });
 
-  useAsyncEffect(async () => {
-    // const findUser = users.find((item) => item.email === user.email);
-    // state.data = findUser?.notes || [];
+  const loadData = async () => {
     const note = await getNote(user._id);
-    state.data = note?.data?.map?.((item) => {
-      return {
-        title: item.title,
-        description: item.description,
-        date: dayjs(item.createdAt)
-      }
-    }) || [];
+    state.data =
+      note?.data?.map?.((item) => {
+        return {
+          title: item.title,
+          description: item.description,
+          date: dayjs(item.createdAt),
+          _id: item._id,
+        };
+      }) || [];
+  };
+
+  useAsyncEffect(async () => {
+    await loadData();
   }, [key]);
 
   const handleClick = (item) => {
     navigation.navigate(NAVIGATOR_SCREEN.NOTE_DETAIL, item);
+  };
+
+  const handleDelete = (item) => {
+    state.notify.title = "Xoá ghi chú";
+    state.notify.message = "Bạn có chắc chắn muốn xoá?";
+    state.notify.color = "blue";
+    state.notify.status = true;
+    state.deleted = item._id;
+  };
+
+  const handleDismiss = () => {
+    state.notify.title = "";
+    state.notify.color = "";
+    state.notify.message = "";
+    state.notify.status = false;
   };
 
   return (
@@ -95,16 +123,15 @@ const NoteScreen = ({ navigation, route }) => {
                     padding: 10,
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "#6B9080",
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {item.title}
-                  </Text>
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>{item.title}</Text>
+                    <TouchableOpacity
+                      style={styles.btnDelete}
+                      onPress={() => handleDelete(item)}
+                    >
+                      <Close />
+                    </TouchableOpacity>
+                  </View>
                   <Text
                     style={{ fontSize: 18, color: "#6B9080", marginTop: 10 }}
                     numberOfLines={2}
@@ -122,6 +149,34 @@ const NoteScreen = ({ navigation, route }) => {
           />
         </View>
       </View>
+      {state.notify.status && (
+        <AwesomeAlert
+          show={state.notify.status}
+          showProgress={false}
+          title={state.notify.title}
+          message={state.notify.message}
+          onDismiss={handleDismiss}
+          titleStyle={{
+            fontSize: 24,
+            color: state.notify.color,
+            fontWeight: "bold",
+          }}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Huỷ"
+          confirmText="Đồng ý"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={handleDismiss}
+          onConfirmPressed={() => {
+            if (state.deleted) deleteNote(state.deleted);
+            state.deleted = "";
+            handleDismiss();
+            setTimeout(() => {
+              loadData();
+            }, 1000);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -164,6 +219,21 @@ const styles = StyleSheet.create({
   card: {
     padding: 5,
     width: "50%",
+  },
+  cardTitle: {
+    color: "#6B9080",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  cardHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  btnDelete: {
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 100,
   },
 });
 

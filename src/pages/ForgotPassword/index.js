@@ -4,7 +4,7 @@ import { TextField, styled } from "@mui/material";
 import { useReactive } from "ahooks";
 import { user } from "../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
-import { loginUser } from "../../services/auth";
+import { loginUser, sendCodeEmail } from "../../services/auth";
 import to from "await-to-js";
 
 const CssTextField = styled(TextField)({
@@ -38,7 +38,7 @@ const ForgotPassword = ({ navigation }) => {
     },
   });
 
-  const handleLogin = async () => {
+  const handleSendMail = async () => {
     if (!state.email) {
       state.notify.title = "Lỗi";
       state.notify.message = "Chưa nhập email!";
@@ -54,27 +54,23 @@ const ForgotPassword = ({ navigation }) => {
       return;
     }
 
-    const [err, result] = await to(
-      loginUser({
-        email: state.email,
-        password: state.password,
-      })
-    );
+    const [err, result] = await to(sendCodeEmail({ email: state.email }));
 
     if (err) {
       state.notify.title = "Lỗi";
-      state.notify.message = "Nhập sai email hoặc mật khẩu!";
+      state.notify.message = "Bạn nhập sai email!";
       state.notify.color = "red";
       state.notify.status = true;
       return;
     }
 
-    user.email = result.data?.email;
-    user._id = result.data?._id;
-    user.gender = result.data?.gender;
-    user.name = result.data?.username;
-    user.dateOfBirth = result.data?.dateOfBirth;
-    navigation.navigate(NAVIGATOR_SCREEN.ADMIN);
+    state.notify.title = "Thành công";
+    state.notify.message = "Gửi email thành công!";
+    state.notify.color = "green";
+    state.notify.status = true;
+    navigation.navigate(NAVIGATOR_SCREEN.DETAIL_FORGOT_PASSWORD, {
+      email: state.email,
+    });
   };
 
   return (
@@ -90,8 +86,13 @@ const ForgotPassword = ({ navigation }) => {
           }}
           onChange={(event) => (state.email = event.target.value)}
         />
-        <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
+        <TouchableOpacity style={styles.btnLogin} onPress={handleSendMail}>
           <Text style={styles.txtLogin}>Gửi</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(NAVIGATOR_SCREEN.LOGIN)}
+        >
+          <Text style={styles.txtBack}>Quay lại đăng nhập</Text>
         </TouchableOpacity>
       </View>
       {state.notify.status && (
@@ -155,6 +156,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     fontWeight: "bold",
+  },
+  txtBack: {
+    color: "black",
+    textDecorationLine: "underline",
   },
 });
 

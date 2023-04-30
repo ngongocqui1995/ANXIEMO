@@ -6,29 +6,59 @@ import AutoDimensionImage, {
 import { NAVIGATOR_SCREEN, QUESTION_TYPE } from "../../utils/enum";
 import { FlatList } from "react-native";
 import { useAsyncEffect, useReactive } from "ahooks";
-import { getQuestion } from "../../services/question";
+import AwesomeAlert from "react-native-awesome-alerts";
+import { deleteQuestion, getQuestion } from "../../services/question";
 import { user } from "../../utils/data";
+import { Close } from "@mui/icons-material";
 import dayjs from "dayjs";
 
 const RepoScreen = ({ navigation }) => {
-  const state = useReactive({ data: [] });
+  const state = useReactive({
+    data: [],
+    notify: {
+      title: "",
+      message: "",
+      color: "",
+      status: false,
+    },
+    deleted: "",
+  });
+
+  const loadData = async () => {
+    const question = await getQuestion(user._id);
+    state.data =
+      question?.data?.map?.((item) => {
+        return {
+          title: QUESTION_TYPE[item.type].title,
+          key: QUESTION_TYPE[item.type].key,
+          score: item.answer.reduce((a, b) => a + b, 0),
+          date: dayjs(item.createdAt),
+          _id: item._id,
+        };
+      }) || [];
+  };
 
   useAsyncEffect(async () => {
-    // const findUser = users.find((item) => item.email === user.email);
-    // state.data = findUser?.results || [];
-    const question = await getQuestion(user._id);
-    state.data = question?.data?.map?.((item) => {
-      return {
-        title: QUESTION_TYPE[item.type].title,
-        key: QUESTION_TYPE[item.type].key,
-        score: item.answer.reduce((a, b) => a + b, 0),
-        date: dayjs(item.createdAt)
-      }
-    }) || [];
+    await loadData();
   }, []);
 
   const handleClick = (item) => {
     navigation.navigate(NAVIGATOR_SCREEN.REPO_DETAIL, item);
+  };
+
+  const handleDelete = (item) => {
+    state.notify.title = "Xoá lưu trữ";
+    state.notify.message = "Bạn có chắc chắn muốn xoá?";
+    state.notify.color = "blue";
+    state.notify.status = true;
+    state.deleted = item._id;
+  };
+
+  const handleDismiss = () => {
+    state.notify.title = "";
+    state.notify.color = "";
+    state.notify.message = "";
+    state.notify.status = false;
   };
 
   return (
@@ -64,7 +94,15 @@ const RepoScreen = ({ navigation }) => {
                 style={styles.card}
                 onPress={() => handleClick(item)}
               >
-                <Text style={styles.cardTitle}>{item.title}</Text>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                  <TouchableOpacity
+                    style={styles.btnDelete}
+                    onPress={() => handleDelete(item)}
+                  >
+                    <Close />
+                  </TouchableOpacity>
+                </View>
                 <View style={styles.cardDescription}>
                   <Text style={{ color: "white", fontWeight: "bold" }}>
                     {item.date.format("DD/MM/YYYY")}
@@ -78,6 +116,34 @@ const RepoScreen = ({ navigation }) => {
           />
         </View>
       </View>
+      {state.notify.status && (
+        <AwesomeAlert
+          show={state.notify.status}
+          showProgress={false}
+          title={state.notify.title}
+          message={state.notify.message}
+          onDismiss={handleDismiss}
+          titleStyle={{
+            fontSize: 24,
+            color: state.notify.color,
+            fontWeight: "bold",
+          }}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Huỷ"
+          confirmText="Đồng ý"
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={handleDismiss}
+          onConfirmPressed={() => {
+            if (state.deleted) deleteQuestion(state.deleted);
+            state.deleted = "";
+            handleDismiss();
+            setTimeout(() => {
+              loadData();
+            }, 1000);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -127,10 +193,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  cardHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   cardDescription: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  btnDelete: {
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 100,
   },
 });
 

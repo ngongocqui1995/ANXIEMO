@@ -11,6 +11,7 @@ import { user, users } from "../../../utils/data";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { createNote } from "../../../services/note";
 import to from "await-to-js";
+import { ArrowBack } from "@mui/icons-material";
 
 const CssTextField = styled(TextField)({
   "& .MuiFormLabel-root": {
@@ -60,11 +61,13 @@ const NoteForm = ({ navigation }) => {
       return;
     }
 
-    const [err] = await to(createNote({
-      userId: user._id,
-      title: state.title,
-      description: state.description
-    }))
+    const [err] = await to(
+      createNote({
+        userId: user._id,
+        title: state.title,
+        description: state.description,
+      })
+    );
 
     if (err) {
       state.notify.title = "Lỗi";
@@ -83,7 +86,9 @@ const NoteForm = ({ navigation }) => {
     //     });
     //   }
     // });
-    navigation.navigate(NAVIGATOR_SCREEN.NOTE, { key: 2 });
+    setTimeout(() => {
+      navigation.navigate(NAVIGATOR_SCREEN.NOTE, { key: 2 });
+    }, 1000);
   };
 
   return (
@@ -92,19 +97,11 @@ const NoteForm = ({ navigation }) => {
         <View style={styles.header}>
           <TouchableOpacity
             style={{ position: "absolute", left: 0 }}
-            onPress={() => navigation.navigate(NAVIGATOR_SCREEN.ADMIN)}
+            onPress={() =>
+              navigation.navigate(NAVIGATOR_SCREEN.NOTE, { key: 2 })
+            }
           >
-            <AutoDimensionImage
-              source={{
-                uri: IconHome,
-                height: 105,
-                width: 105,
-              }}
-              dimensionType={imageDimensionTypes.HEIGHT}
-              dimensionValue={45}
-              otherDimensionMaxValue={45}
-              style={styles.image}
-            />
+            <ArrowBack />
           </TouchableOpacity>
           <Text style={styles.title}>Ghi chú</Text>
         </View>
