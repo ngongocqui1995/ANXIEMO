@@ -279,7 +279,7 @@ export const learn = [
 
 export const examination = [
   {
-    title: "Khi tôi phải thi, tôi bắt đầu cảm thấy buồn nôn.",
+    title: "Trước khi thi, tôi cảm thấy bồn chồn, lo lắng!",
     questions: [
       { key: 1, label: "Rất không đồng ý" },
       { key: 2, label: "Không đồng ý" },
@@ -289,7 +289,7 @@ export const examination = [
     ],
   },
   {
-    title: "Khi sắp hết thời gian thi, tim tôi bắt đầu đập nhanh.",
+    title: "Tôi rất lo lắng!",
     questions: [
       { key: 1, label: "Rất không đồng ý" },
       { key: 2, label: "Không đồng ý" },
